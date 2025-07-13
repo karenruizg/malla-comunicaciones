@@ -1,85 +1,94 @@
 const cursos = [
   {
-    nombre: "COMPORTAMIENTO DEL CONSUMIDOR",
-    codigo: "8123",
-    categoria: "publicidad",
-    requisitos: ["FUNDAMENTOS DE PUBLICIDAD Y MARKETING"]
-  },
-  {
-    nombre: "ESTRATEGIAS DE MARKETING",
-    codigo: "8202",
-    categoria: "publicidad",
-    requisitos: ["FUNDAMENTOS DE PUBLICIDAD Y MARKETING"]
-  },
-  {
-    nombre: "PUBLICIDAD Y PROMOCIÓN",
-    codigo: "8897",
-    categoria: "publicidad",
-    requisitos: ["FUNDAMENTOS DE PUBLICIDAD Y MARKETING"]
-  },
-  {
-    nombre: "FUNDAMENTOS DE PUBLICIDAD Y MARKETING",
-    codigo: "550054",
+    nombre: "STORYTELLING",
+    nivel: 3,
     categoria: "obligatorio",
     requisitos: []
   },
   {
     nombre: "PRODUCCIÓN INFORMATIVA",
-    codigo: "550007",
+    nivel: 4,
     categoria: "periodismo",
     requisitos: ["STORYTELLING"]
   },
   {
-    nombre: "STORYTELLING",
-    codigo: "550001",
+    nombre: "PERIODISMO TRANSMEDIA",
+    nivel: 5,
+    categoria: "periodismo",
+    requisitos: ["BASES DE LA INFORMACIÓN"]
+  },
+  {
+    nombre: "BASES DE LA INFORMACIÓN",
+    nivel: 4,
+    categoria: "obligatorio",
+    requisitos: ["STORYTELLING"]
+  },
+  {
+    nombre: "ESTRATEGIAS DE MARKETING",
+    nivel: 5,
+    categoria: "publicidad",
+    requisitos: ["FUNDAMENTOS DE PUBLICIDAD Y MARKETING"]
+  },
+  {
+    nombre: "FUNDAMENTOS DE PUBLICIDAD Y MARKETING",
+    nivel: 3,
     categoria: "obligatorio",
     requisitos: []
   },
-  // Puedes añadir más cursos según los PDF
+  {
+    nombre: "COMPORTAMIENTO DEL CONSUMIDOR",
+    nivel: 4,
+    categoria: "publicidad",
+    requisitos: ["FUNDAMENTOS DE PUBLICIDAD Y MARKETING"]
+  }
+  // Agrega más cursos aquí usando el mismo formato...
 ];
 
-const estadoCursos = {}; // guarda si está aprobado o no
+const aprobados = {};
 
-function crearCurso(curso) {
-  const div = document.createElement('div');
-  div.className = `curso ${curso.categoria}`;
-  div.textContent = curso.nombre;
-  div.id = curso.nombre;
-  div.onclick = () => toggleCurso(curso.nombre);
-  actualizarEstado(div, curso.nombre);
-  return div;
-}
-
-function toggleCurso(nombre) {
-  estadoCursos[nombre] = !estadoCursos[nombre];
-  document.querySelectorAll('.curso').forEach(c => {
-    const curso = cursos.find(x => x.nombre === c.id);
-    actualizarEstado(c, curso.nombre);
-  });
-}
-
-function actualizarEstado(div, nombre) {
-  const curso = cursos.find(c => c.nombre === nombre);
-  const requisitosCumplidos = curso.requisitos.every(req => estadoCursos[req]);
-  if (estadoCursos[nombre]) {
-    div.classList.add('aprobado');
-    div.style.cursor = "default";
-  } else {
-    div.classList.remove('aprobado');
-    div.style.cursor = requisitosCumplidos ? "pointer" : "not-allowed";
+function crearHTML() {
+  const contenedor = document.getElementById("malla");
+  for (let nivel = 1; nivel <= 10; nivel++) {
+    const nivelDiv = document.createElement("div");
+    nivelDiv.className = "nivel";
+    nivelDiv.innerHTML = `<h2>Nivel ${nivel}</h2><div class="cursos" id="nivel-${nivel}"></div>`;
+    contenedor.appendChild(nivelDiv);
   }
 
-  div.style.opacity = requisitosCumplidos || estadoCursos[nombre] ? "1" : "0.4";
+  cursos.forEach(curso => {
+    const div = document.createElement("div");
+    div.className = `curso ${curso.categoria}`;
+    div.textContent = curso.nombre;
+    div.id = curso.nombre;
+
+    div.onclick = () => {
+      if (!div.classList.contains("habilitado")) return;
+      div.classList.add("aprobado");
+      aprobados[curso.nombre] = true;
+      actualizarCursos();
+    };
+
+    document.getElementById(`nivel-${curso.nivel}`).appendChild(div);
+  });
+
+  actualizarCursos();
 }
 
-function cargarCursos() {
-  const contenedor = document.getElementById('contenedor-cursos');
+function actualizarCursos() {
   cursos.forEach(curso => {
-    estadoCursos[curso.nombre] = false;
-    const divCurso = crearCurso(curso);
-    contenedor.appendChild(divCurso);
+    const div = document.getElementById(curso.nombre);
+    if (aprobados[curso.nombre]) {
+      div.classList.remove("habilitado");
+      div.classList.add("aprobado");
+    } else {
+      const habilitado = curso.requisitos.every(req => aprobados[req]);
+      if (habilitado) {
+        div.classList.add("habilitado");
+      } else {
+        div.classList.remove("habilitado");
+      }
+    }
   });
 }
 
-cargarCursos();
-
+crearHTML();
