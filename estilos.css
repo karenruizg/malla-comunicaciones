@@ -1,1 +1,72 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #fdfdfd;
+  margin: 0;
+  padding: 1em;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #444;
+}
+
+#contenedor-cursos {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.curso {
+  border-radius: 12px;
+  padding: 1rem;
+  width: 220px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+  opacity: 0.6;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.curso:hover {
+  transform: scale(1.03);
+}
+
+.curso.aprobado {
+  opacity: 1;
+  border-color: #28a745;
+}
+
+.obligatorio {
+  background-color: #d0ebff;
+}
+
+.publicidad {
+  background-color: #ffdede;
+}
+
+.audiovisual {
+  background-color: #ffe8cc;
+}
+
+.periodismo {
+  background-color: #e6f4ea;
+}
+
+.corporativa {
+  background-color: #ede7f6;
+}
+
+.desarrollo {
+  background-color: #fff3cd;
+}
+
+.fotodiseno {
+  background-color: #d1f7f7;
+}
+
+.animacion {
+  background-color: #ffe4fa;
+}
 
